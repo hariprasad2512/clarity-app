@@ -1,0 +1,177 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+  /* Clarity custom colors */
+  --color-clarity-green: var(--clarity-green);
+  --color-clarity-green-dark: var(--clarity-green-dark);
+  --color-clarity-surface: var(--clarity-surface);
+}
+
+/* Light mode — inspired by the app's warm off-white / green theme */
+:root {
+  --radius: 0.625rem;
+  /* Clarity green accent */
+  --clarity-green: oklch(0.55 0.17 142);
+  --clarity-green-dark: oklch(0.42 0.15 142);
+  --clarity-surface: oklch(0.97 0.015 120);
+
+  --background: oklch(0.975 0.012 118);
+  --foreground: oklch(0.15 0.02 140);
+  --card: oklch(0.99 0.008 115);
+  --card-foreground: oklch(0.15 0.02 140);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
+  --primary: oklch(0.50 0.17 142);
+  --primary-foreground: oklch(0.99 0 0);
+  --secondary: oklch(0.93 0.025 130);
+  --secondary-foreground: oklch(0.25 0.06 142);
+  --muted: oklch(0.94 0.018 120);
+  --muted-foreground: oklch(0.48 0.04 140);
+  --accent: oklch(0.92 0.04 140);
+  --accent-foreground: oklch(0.25 0.08 142);
+  --destructive: oklch(0.577 0.245 27.325);
+  --destructive-foreground: oklch(0.985 0 0);
+  --border: oklch(0.89 0.025 128);
+  --input: oklch(0.89 0.025 128);
+  --ring: oklch(0.55 0.17 142);
+  --chart-1: oklch(0.55 0.17 142);
+  --chart-2: oklch(0.65 0.14 162);
+  --chart-3: oklch(0.45 0.12 142);
+  --chart-4: oklch(0.75 0.12 100);
+  --chart-5: oklch(0.60 0.14 180);
+  --sidebar: oklch(0.97 0.015 118);
+  --sidebar-foreground: oklch(0.15 0.02 140);
+  --sidebar-primary: oklch(0.50 0.17 142);
+  --sidebar-primary-foreground: oklch(0.99 0 0);
+  --sidebar-accent: oklch(0.92 0.04 140);
+  --sidebar-accent-foreground: oklch(0.25 0.08 142);
+  --sidebar-border: oklch(0.89 0.025 128);
+  --sidebar-ring: oklch(0.55 0.17 142);
+}
+
+/* Dark mode — inspired by the app's dark green sidebar */
+.dark {
+  --clarity-green: oklch(0.60 0.18 142);
+  --clarity-green-dark: oklch(0.48 0.16 142);
+  --clarity-surface: oklch(0.20 0.02 142);
+
+  --background: oklch(0.13 0.015 140);
+  --foreground: oklch(0.95 0.01 120);
+  --card: oklch(0.18 0.02 140);
+  --card-foreground: oklch(0.95 0.01 120);
+  --popover: oklch(0.20 0.02 140);
+  --popover-foreground: oklch(0.95 0.01 120);
+  --primary: oklch(0.55 0.18 142);
+  --primary-foreground: oklch(0.99 0 0);
+  --secondary: oklch(0.22 0.025 140);
+  --secondary-foreground: oklch(0.90 0.02 120);
+  --muted: oklch(0.22 0.02 140);
+  --muted-foreground: oklch(0.60 0.04 130);
+  --accent: oklch(0.25 0.035 142);
+  --accent-foreground: oklch(0.90 0.02 120);
+  --destructive: oklch(0.704 0.191 22.216);
+  --destructive-foreground: oklch(0.985 0 0);
+  --border: oklch(1 0 0 / 9%);
+  --input: oklch(1 0 0 / 12%);
+  --ring: oklch(0.55 0.18 142);
+  --chart-1: oklch(0.60 0.18 142);
+  --chart-2: oklch(0.70 0.15 162);
+  --chart-3: oklch(0.50 0.14 142);
+  --chart-4: oklch(0.75 0.14 100);
+  --chart-5: oklch(0.65 0.16 180);
+  --sidebar: oklch(0.16 0.02 140);
+  --sidebar-foreground: oklch(0.95 0.01 120);
+  --sidebar-primary: oklch(0.55 0.18 142);
+  --sidebar-primary-foreground: oklch(0.99 0 0);
+  --sidebar-accent: oklch(0.25 0.035 142);
+  --sidebar-accent-foreground: oklch(0.90 0.02 120);
+  --sidebar-border: oklch(1 0 0 / 9%);
+  --sidebar-ring: oklch(0.55 0.18 142);
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+/* Scroll animation utilities */
+@layer utilities {
+  .animate-fade-up {
+    animation: fadeUp 0.7s ease forwards;
+  }
+  .animate-fade-in {
+    animation: fadeIn 0.6s ease forwards;
+  }
+  .animate-scale-in {
+    animation: scaleIn 0.6s ease forwards;
+  }
+  .opacity-0-init {
+    opacity: 0;
+    transform: translateY(32px);
+  }
+  .opacity-0-scale {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(32px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to   { opacity: 1; transform: scale(1); }
+}
