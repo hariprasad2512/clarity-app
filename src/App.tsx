@@ -4,12 +4,9 @@ import { Badge } from "@/components/ui/badge"
 import { ModeToggle } from "@/components/mode-toggle"
 import { useScrollReveal } from "@/hooks/use-scroll-reveal"
 import { useDetectPlatform, type Platform } from "@/hooks/use-detect-platform"
+import { FaIcon, faApple, faWindows, faAndroid, faLinux, faTerminal, type FaIconDef } from "@/components/fa-icon"
 import {
   CheckCircle2,
-  Smartphone,
-  Monitor,
-  Apple,
-  ArrowRight,
   Code2,
   Bell,
   BellRing,
@@ -78,7 +75,7 @@ function FeatureCard({
 
 /* ─── Platform download options ────────────────────────────────────────── */
 type DownloadOption = {
-  icon: React.ComponentType<{ className?: string }>
+  icon: FaIconDef
   label: string
   sub: string
   href: string
@@ -89,25 +86,25 @@ const PLAY_STORE = "https://play.google.com/store/apps/details?id=com.harry.Clar
 
 const downloadOptionsByPlatform: Record<Platform, DownloadOption[]> = {
   android: [
-    { icon: Smartphone, label: "Google Play", sub: "Get on", href: PLAY_STORE },
-    { icon: Smartphone, label: "Android (.apk)", sub: "Download for", href: RELEASES },
+    { icon: faAndroid, label: "Google Play", sub: "Get on", href: PLAY_STORE },
+    { icon: faAndroid, label: "Android (.apk)", sub: "Download for", href: RELEASES },
   ],
   ios: [
-    { icon: Apple, label: "macOS (.dmg)", sub: "Download for", href: RELEASES },
+    { icon: faApple, label: "macOS (.dmg)", sub: "Download for", href: RELEASES },
   ],
   macos: [
-    { icon: Apple, label: "Homebrew", sub: "Install via", href: "https://github.com/hariprasad2512/clarity_flutter" },
-    { icon: Apple, label: "macOS (.dmg)", sub: "Download for", href: RELEASES },
+    { icon: faTerminal, label: "Homebrew", sub: "Install via", href: "https://github.com/hariprasad2512/clarity_flutter" },
+    { icon: faApple, label: "macOS (.dmg)", sub: "Download for", href: RELEASES },
   ],
   windows: [
-    { icon: Monitor, label: "Windows (.exe)", sub: "Download for", href: RELEASES },
+    { icon: faWindows, label: "Windows (.exe)", sub: "Download for", href: RELEASES },
   ],
   linux: [
-    { icon: Monitor, label: "Linux (AppImage)", sub: "Download for", href: RELEASES },
+    { icon: faLinux, label: "Linux (AppImage)", sub: "Download for", href: RELEASES },
   ],
   unknown: [
-    { icon: Apple, label: "macOS (.dmg)", sub: "Download for", href: RELEASES },
-    { icon: Monitor, label: "Windows (.exe)", sub: "Download for", href: RELEASES },
+    { icon: faApple, label: "macOS (.dmg)", sub: "Download for", href: RELEASES },
+    { icon: faWindows, label: "Windows (.exe)", sub: "Download for", href: RELEASES },
   ],
 }
 
@@ -127,12 +124,11 @@ function PlatformDownloadRow({ platform }: { platform: Platform }) {
           rel="noopener noreferrer"
           className="group flex items-center gap-3 rounded-xl border border-border bg-card/90 px-5 py-3 backdrop-blur-sm transition-all hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-lg"
         >
-          <opt.icon className="size-5 shrink-0 text-primary" />
+          <FaIcon icon={opt.icon} className="size-5 shrink-0 text-primary" />
           <div className="text-left">
             <div className="text-[11px] leading-tight text-muted-foreground">{opt.sub}</div>
             <div className="text-sm font-semibold leading-tight text-foreground">{opt.label}</div>
           </div>
-          <ArrowRight className="ml-1 size-4 text-muted-foreground transition-all group-hover:translate-x-0.5 group-hover:text-primary" />
         </a>
       ))}
     </div>
@@ -141,13 +137,13 @@ function PlatformDownloadRow({ platform }: { platform: Platform }) {
 
 /* ─── Platform download button ──────────────────────────────────────────── */
 function PlatformButton({
-  icon: Icon,
+  icon: iconDef,
   label,
   sub,
   href,
   highlight,
 }: {
-  icon: React.ComponentType<{ className?: string }>
+  icon: FaIconDef
   label: string
   sub: string
   href: string
@@ -164,12 +160,11 @@ function PlatformButton({
           : "border-border bg-card text-foreground hover:border-primary/40 hover:bg-accent"
       }`}
     >
-      <Icon className="size-6 shrink-0" />
+      <FaIcon icon={iconDef} className="size-6 shrink-0" />
       <div className="text-left">
         <div className="text-xs opacity-70">{sub}</div>
         <div className="font-semibold text-sm">{label}</div>
       </div>
-      <ArrowRight className="ml-auto size-4 opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all" />
     </a>
   )
 }
@@ -480,19 +475,19 @@ export function App() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {[
               {
-                icon: Apple,
+                icon: faApple,
                 name: "macOS",
                 desc: "Native menu bar integration, global Quick Add hotkey, tray presence, and launch-at-login.",
                 badge: "macOS 12+",
               },
               {
-                icon: Monitor,
+                icon: faWindows,
                 name: "Windows",
                 desc: "Full desktop experience with system tray, keyboard shortcuts, and window management.",
                 badge: "Windows 10+",
               },
               {
-                icon: Smartphone,
+                icon: faAndroid,
                 name: "Android",
                 desc: "Home-screen widgets, swipe gestures, and a clean material design that stays out of your way.",
                 badge: "Android 8+",
@@ -501,7 +496,7 @@ export function App() {
               <Reveal key={p.name} delay={i * 100}>
                 <div className="group rounded-2xl border bg-card p-8 hover:border-primary/40 hover:shadow-lg transition-all h-full flex flex-col gap-4">
                   <div className="flex size-12 items-center justify-center rounded-2xl bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
-                    <p.icon className="size-6" />
+                    <FaIcon icon={p.icon} className="size-6" />
                   </div>
                   <div>
                     <div className="flex items-center gap-2 mb-1">
@@ -533,26 +528,26 @@ export function App() {
           <Reveal delay={100}>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
               <PlatformButton
-                icon={Apple}
+                icon={faApple}
                 sub="Download for"
                 label="macOS (.dmg)"
                 href="https://github.com/hariprasad2512/clarity_flutter/releases/latest"
                 highlight
               />
               <PlatformButton
-                icon={Monitor}
+                icon={faWindows}
                 sub="Download for"
                 label="Windows (.exe)"
                 href="https://github.com/hariprasad2512/clarity_flutter/releases/latest"
               />
               <PlatformButton
-                icon={Smartphone}
+                icon={faAndroid}
                 sub="Download for"
                 label="Android (.apk)"
                 href="https://github.com/hariprasad2512/clarity_flutter/releases/latest"
               />
               <PlatformButton
-                icon={Smartphone}
+                icon={faAndroid}
                 sub="Get on"
                 label="Google Play"
                 href="https://play.google.com/store/apps/details?id=com.harry.Clarity"
