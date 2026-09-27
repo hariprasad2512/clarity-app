@@ -12,6 +12,8 @@ import {
   ArrowRight,
   Code2,
   Bell,
+  BellRing,
+  Mail,
   Zap,
   RefreshCw,
   Shield,
@@ -189,7 +191,11 @@ function Navbar({ scrolled }: { scrolled: boolean }) {
       <div className="mx-auto max-w-6xl px-4 h-16 flex items-center justify-between">
         {/* logo */}
         <div className="flex items-center gap-2.5">
-          <ClarityMark />
+          <img
+            src="/clarity_store_icon_512.png"
+            alt="Clarity"
+            className="size-9 rounded-xl object-cover shadow-sm"
+          />
           <span className="text-lg font-bold text-foreground">Clarity</span>
         </div>
         {/* nav links */}
@@ -236,7 +242,12 @@ export function App() {
     {
       icon: RefreshCw,
       title: "Live Two-Way Sync",
-      description: "Offline-first with Supabase. Changes sync across all your devices the moment you're back online.",
+      description: "Connect Gmail once and keep every task synced across desktop and mobile the moment it changes.",
+    },
+    {
+      icon: Mail,
+      title: "Gmail Connected",
+      description: "Stay in step with your inbox. Gmail-connected tasks sync everywhere, so every device stays current.",
     },
     {
       icon: CalendarClock,
@@ -335,6 +346,19 @@ export function App() {
               </Badge>
             ))}
           </div>
+
+          <div
+            className="mx-auto mt-6 flex max-w-xl items-center gap-3 rounded-2xl border border-primary/25 bg-card/80 px-4 py-3 text-left shadow-sm backdrop-blur-sm animate-fade-up"
+            style={{ animationDelay: "480ms", animationFillMode: "both" }}
+          >
+            <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
+              <BellRing className="size-5" />
+            </div>
+            <p className="text-sm leading-relaxed text-muted-foreground">
+              <span className="font-semibold text-foreground">Connect Gmail once.</span>{" "}
+              Your tasks sync across every platform, with notifications arriving on all your devices at the same time.
+            </p>
+          </div>
         </div>
 
         {/* app screenshots */}
@@ -365,7 +389,7 @@ export function App() {
               <span className="text-primary">nothing you don't</span>
             </h2>
             <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-              Clarity is built around focus. No clutter, no premium gates — just a fast, beautiful task manager that stays out of your way.
+              Clarity is built around focus. Connect Gmail once, then keep tasks and reminders aligned across every device without the clutter.
             </p>
           </Reveal>
 
@@ -388,7 +412,7 @@ export function App() {
               One app, every device
             </h2>
             <p className="text-muted-foreground text-lg max-w-xl mx-auto">
-              Built with Flutter so the experience is native-quality on every platform you use.
+              Connect Gmail once and your tasks, reminders, and updates stay in sync across every platform you use.
             </p>
           </Reveal>
 
