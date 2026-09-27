@@ -3,9 +3,9 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { ModeToggle } from "@/components/mode-toggle"
 import { useScrollReveal } from "@/hooks/use-scroll-reveal"
+import { useDetectPlatform, type Platform } from "@/hooks/use-detect-platform"
 import {
   CheckCircle2,
-  Download,
   Smartphone,
   Monitor,
   Apple,
@@ -72,6 +72,69 @@ function FeatureCard({
         <h3 className="font-semibold text-base text-foreground mb-1">{title}</h3>
         <p className="text-sm text-muted-foreground leading-relaxed">{description}</p>
       </div>
+    </div>
+  )
+}
+
+/* ─── Platform download options ────────────────────────────────────────── */
+type DownloadOption = {
+  icon: React.ComponentType<{ className?: string }>
+  label: string
+  sub: string
+  href: string
+}
+
+const RELEASES = "https://github.com/hariprasad2512/clarity_flutter/releases/latest"
+const PLAY_STORE = "https://play.google.com/store/apps/details?id=com.harry.Clarity"
+
+const downloadOptionsByPlatform: Record<Platform, DownloadOption[]> = {
+  android: [
+    { icon: Smartphone, label: "Google Play", sub: "Get on", href: PLAY_STORE },
+    { icon: Smartphone, label: "Android (.apk)", sub: "Download for", href: RELEASES },
+  ],
+  ios: [
+    { icon: Apple, label: "macOS (.dmg)", sub: "Download for", href: RELEASES },
+  ],
+  macos: [
+    { icon: Apple, label: "Homebrew", sub: "Install via", href: "https://github.com/hariprasad2512/clarity_flutter" },
+    { icon: Apple, label: "macOS (.dmg)", sub: "Download for", href: RELEASES },
+  ],
+  windows: [
+    { icon: Monitor, label: "Windows (.exe)", sub: "Download for", href: RELEASES },
+  ],
+  linux: [
+    { icon: Monitor, label: "Linux (AppImage)", sub: "Download for", href: RELEASES },
+  ],
+  unknown: [
+    { icon: Apple, label: "macOS (.dmg)", sub: "Download for", href: RELEASES },
+    { icon: Monitor, label: "Windows (.exe)", sub: "Download for", href: RELEASES },
+  ],
+}
+
+function PlatformDownloadRow({ platform }: { platform: Platform }) {
+  const options = downloadOptionsByPlatform[platform]
+
+  return (
+    <div
+      className="flex flex-col sm:flex-row gap-3 justify-center animate-fade-up"
+      style={{ animationDelay: "360ms", animationFillMode: "both" }}
+    >
+      {options.map((opt) => (
+        <a
+          key={opt.label}
+          href={opt.href}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="group flex items-center gap-3 rounded-xl border border-border bg-card/90 px-5 py-3 backdrop-blur-sm transition-all hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-lg"
+        >
+          <opt.icon className="size-5 shrink-0 text-primary" />
+          <div className="text-left">
+            <div className="text-[11px] leading-tight text-muted-foreground">{opt.sub}</div>
+            <div className="text-sm font-semibold leading-tight text-foreground">{opt.label}</div>
+          </div>
+          <ArrowRight className="ml-1 size-4 text-muted-foreground transition-all group-hover:translate-x-0.5 group-hover:text-primary" />
+        </a>
+      ))}
     </div>
   )
 }
@@ -226,6 +289,7 @@ function Navbar({ scrolled }: { scrolled: boolean }) {
 /* ─── Main page ─────────────────────────────────────────────────────────── */
 export function App() {
   const [scrolled, setScrolled] = useState(false)
+  const platform = useDetectPlatform()
 
   useEffect(() => {
     const handler = () => setScrolled(window.scrollY > 20)
@@ -314,16 +378,13 @@ export function App() {
             macOS, Windows, Android — minimal by design, powerful when you need it.
           </p>
 
-          {/* CTA buttons */}
+          {/* device-aware download buttons */}
+          <PlatformDownloadRow platform={platform} />
+
           <div
-            className="flex flex-col sm:flex-row gap-3 justify-center animate-fade-up"
-            style={{ animationDelay: "340ms", animationFillMode: "both" }}
+            className="flex justify-center animate-fade-up"
+            style={{ animationDelay: "400ms", animationFillMode: "both" }}
           >
-            <Button size="lg" className="gap-2 text-base px-8" asChild>
-              <a href="#download">
-                <Download className="size-5" /> Download Free
-              </a>
-            </Button>
             <Button size="lg" variant="outline" className="gap-2 text-base px-8" asChild>
               <a
                 href="https://github.com/hariprasad2512/clarity_flutter"
