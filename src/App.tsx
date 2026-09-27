@@ -4,25 +4,35 @@ import { Badge } from "@/components/ui/badge"
 import { ModeToggle } from "@/components/mode-toggle"
 import { useScrollReveal } from "@/hooks/use-scroll-reveal"
 import { useDetectPlatform, type Platform } from "@/hooks/use-detect-platform"
-import { FaIcon, faApple, faWindows, faAndroid, faLinux, faTerminal, type FaIconDef } from "@/components/fa-icon"
+import { FaIcon, faApple, faWindows, faAndroid, faGithub, faLinux, faTerminal, type FaIconDef } from "@/components/fa-icon"
+import { useReleaseAssets, RELEASES_PAGE, type ReleaseUrls } from "@/hooks/use-release-assets"
+import { BrewModal } from "@/components/brew-modal"
+import { TypeDemo } from "@/components/type-demo"
 import {
-  CheckCircle2,
-  Code2,
-  Bell,
-  BellRing,
-  Mail,
-  Zap,
   RefreshCw,
-  Shield,
   CalendarClock,
   Layers,
+  ChevronDown,
+  FileArchive,
 } from "lucide-react"
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from "@/components/ui/dropdown-menu"
+
+const LOGO = `${import.meta.env.BASE_URL}clarity_store_icon_512.png`
 
 function ClarityMark({ className = "size-8" }: { className?: string }) {
   return (
-    <span className={`inline-flex items-center justify-center rounded-xl bg-primary text-primary-foreground ${className}`} aria-hidden="true">
-      <CheckCircle2 className="size-3/5" strokeWidth={2.5} />
-    </span>
+    <img
+      src={LOGO}
+      alt="Clarity logo"
+      draggable={false}
+      className={`object-cover ${className}`}
+      aria-hidden="true"
+    />
   )
 }
 
@@ -79,58 +89,75 @@ type DownloadOption = {
   label: string
   sub: string
   href: string
+  onClick?: () => void
 }
 
-const RELEASES = "https://github.com/hariprasad2512/clarity_flutter/releases/latest"
 const PLAY_STORE = "https://play.google.com/store/apps/details?id=com.harry.Clarity"
 
-const downloadOptionsByPlatform: Record<Platform, DownloadOption[]> = {
-  android: [
-    { icon: faAndroid, label: "Google Play", sub: "Get on", href: PLAY_STORE },
-    { icon: faAndroid, label: "Android (.apk)", sub: "Download for", href: RELEASES },
-  ],
-  ios: [
-    { icon: faApple, label: "macOS (.dmg)", sub: "Download for", href: RELEASES },
-  ],
-  macos: [
-    { icon: faTerminal, label: "Homebrew", sub: "Install via", href: "https://github.com/hariprasad2512/clarity_flutter" },
-    { icon: faApple, label: "macOS (.dmg)", sub: "Download for", href: RELEASES },
-  ],
-  windows: [
-    { icon: faWindows, label: "Windows (.exe)", sub: "Download for", href: RELEASES },
-  ],
-  linux: [
-    { icon: faLinux, label: "Linux (AppImage)", sub: "Download for", href: RELEASES },
-  ],
-  unknown: [
-    { icon: faApple, label: "macOS (.dmg)", sub: "Download for", href: RELEASES },
-    { icon: faWindows, label: "Windows (.exe)", sub: "Download for", href: RELEASES },
-  ],
+function getDownloadOptions(urls: ReleaseUrls, onBrew: () => void): Record<Platform, DownloadOption[]> {
+  return {
+    android: [
+      { icon: faAndroid, label: "Google Play", sub: "Get on", href: PLAY_STORE },
+      { icon: faAndroid, label: "Android (.apk)", sub: "Download for", href: urls.android },
+    ],
+    ios: [
+      { icon: faApple, label: "macOS", sub: "Download for", href: urls.macos },
+    ],
+    macos: [
+      { icon: faTerminal, label: "Homebrew", sub: "Install via", href: "", onClick: onBrew },
+      { icon: faApple, label: "macOS", sub: "Download for", href: urls.macos },
+    ],
+    windows: [
+      { icon: faWindows, label: "Windows (.exe)", sub: "Download for", href: urls.windows },
+    ],
+    linux: [
+      { icon: faLinux, label: "Linux (AppImage)", sub: "Download for", href: RELEASES_PAGE },
+    ],
+    unknown: [
+      { icon: faApple, label: "macOS", sub: "Download for", href: urls.macos },
+      { icon: faWindows, label: "Windows (.exe)", sub: "Download for", href: urls.windows },
+    ],
+  }
 }
 
-function PlatformDownloadRow({ platform }: { platform: Platform }) {
-  const options = downloadOptionsByPlatform[platform]
+function PlatformDownloadRow({ platform, urls, onBrew }: { platform: Platform; urls: ReleaseUrls; onBrew: () => void }) {
+  const options = getDownloadOptions(urls, onBrew)[platform]
 
   return (
     <div
       className="flex flex-col sm:flex-row gap-3 justify-center animate-fade-up"
       style={{ animationDelay: "360ms", animationFillMode: "both" }}
     >
-      {options.map((opt) => (
-        <a
-          key={opt.label}
-          href={opt.href}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="group flex items-center gap-3 rounded-xl border border-border bg-card/90 px-5 py-3 backdrop-blur-sm transition-all hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-lg"
-        >
-          <FaIcon icon={opt.icon} className="size-5 shrink-0 text-primary" />
-          <div className="text-left">
-            <div className="text-[11px] leading-tight text-muted-foreground">{opt.sub}</div>
-            <div className="text-sm font-semibold leading-tight text-foreground">{opt.label}</div>
-          </div>
-        </a>
-      ))}
+      {options.map((opt) =>
+        opt.onClick ? (
+          <button
+            key={opt.label}
+            type="button"
+            onClick={opt.onClick}
+            className="group flex cursor-pointer items-center gap-3 rounded-xl border border-border bg-card/90 px-5 py-3 backdrop-blur-sm transition-all hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-lg"
+          >
+            <FaIcon icon={opt.icon} className="size-5 shrink-0 text-primary" />
+            <div className="text-left">
+              <div className="text-[11px] leading-tight text-muted-foreground">{opt.sub}</div>
+              <div className="text-sm font-semibold leading-tight text-foreground">{opt.label}</div>
+            </div>
+          </button>
+        ) : (
+          <a
+            key={opt.label}
+            href={opt.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group flex items-center gap-3 rounded-xl border border-border bg-card/90 px-5 py-3 backdrop-blur-sm transition-all hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-lg"
+          >
+            <FaIcon icon={opt.icon} className="size-5 shrink-0 text-primary" />
+            <div className="text-left">
+              <div className="text-[11px] leading-tight text-muted-foreground">{opt.sub}</div>
+              <div className="text-sm font-semibold leading-tight text-foreground">{opt.label}</div>
+            </div>
+          </a>
+        ),
+      )}
     </div>
   )
 }
@@ -169,6 +196,37 @@ function PlatformButton({
   )
 }
 
+/* ─── macOS download split button (zip or Homebrew) ─────────────────────── */
+function MacDownloadMenu({ macosUrl, onBrew }: { macosUrl: string; onBrew: () => void }) {
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <button
+          type="button"
+          className="group flex w-full cursor-pointer items-center gap-4 rounded-2xl border border-primary/50 bg-primary px-6 py-4 text-primary-foreground transition-all hover:-translate-y-0.5 hover:bg-primary/90 hover:shadow-lg"
+        >
+          <FaIcon icon={faApple} className="size-6 shrink-0" />
+          <div className="flex-1 text-left">
+            <div className="text-xs opacity-70">Download for</div>
+            <div className="font-semibold text-sm">macOS</div>
+          </div>
+          <ChevronDown className="size-5 shrink-0 opacity-70 transition-transform group-data-[state=open]:rotate-180" />
+        </button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end" className="w-64">
+        <DropdownMenuItem asChild>
+          <a href={macosUrl} target="_blank" rel="noopener noreferrer">
+            <FileArchive /> Download .zip
+          </a>
+        </DropdownMenuItem>
+        <DropdownMenuItem onSelect={() => onBrew()}>
+          <FaIcon icon={faTerminal} /> Install with Homebrew
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  )
+}
+
 /* ─── App screenshot mockup ─────────────────────────────────────────────── */
 function AppMockup({ mode }: { mode: "light" | "dark" }) {
   const isDark = mode === "dark"
@@ -203,7 +261,7 @@ function AppMockup({ mode }: { mode: "light" | "dark" }) {
         {/* sidebar */}
         <div className={`${sidebar} w-36 flex-shrink-0 p-3 flex flex-col gap-1 border-r ${border}`}>
           <div className="flex items-center gap-2 mb-2">
-            <CheckCircle2 className="size-4 text-primary" />
+            <img src={LOGO} alt="Clarity logo" className="size-4 rounded object-cover" />
             <span className={`text-sm font-bold ${text}`}>Clarity</span>
           </div>
           <div className={`rounded-lg px-2 py-1.5 flex items-center justify-between bg-primary/20`}>
@@ -250,7 +308,7 @@ function Navbar({ scrolled }: { scrolled: boolean }) {
         {/* logo */}
         <div className="flex items-center gap-2.5">
           <img
-            src="/clarity_store_icon_512.png"
+            src={LOGO}
             alt="Clarity"
             className="size-9 rounded-xl object-cover shadow-sm"
           />
@@ -267,7 +325,7 @@ function Navbar({ scrolled }: { scrolled: boolean }) {
             rel="noopener noreferrer"
             className="hover:text-foreground transition-colors flex items-center gap-1"
           >
-            <Code2 className="size-4" /> GitHub
+            <FaIcon icon={faGithub} className="size-4" /> GitHub
           </a>
         </nav>
         <div className="flex items-center gap-2">
@@ -284,7 +342,9 @@ function Navbar({ scrolled }: { scrolled: boolean }) {
 /* ─── Main page ─────────────────────────────────────────────────────────── */
 export function App() {
   const [scrolled, setScrolled] = useState(false)
+  const [brewOpen, setBrewOpen] = useState(false)
   const platform = useDetectPlatform()
+  const { urls } = useReleaseAssets()
 
   useEffect(() => {
     const handler = () => setScrolled(window.scrollY > 20)
@@ -294,34 +354,14 @@ export function App() {
 
   const features = [
     {
-      icon: Bell,
-      title: "Smart Reminders",
-      description: "Actionable local notifications — mark done or snooze right from the alert, on every device.",
-    },
-    {
       icon: RefreshCw,
-      title: "Live Two-Way Sync",
-      description: "Connect Gmail once and keep every task synced across desktop and mobile the moment it changes.",
-    },
-    {
-      icon: Mail,
-      title: "Gmail Connected",
-      description: "Stay in step with your inbox. Gmail-connected tasks sync everywhere, so every device stays current.",
+      title: "Email Sync",
+      description: "Turn emails into tasks that stay synced across every device, the moment they change.",
     },
     {
       icon: CalendarClock,
       title: "Natural Language Dates",
       description: "Type 'tomorrow at 5pm' and Clarity parses it instantly. Refine with calendar or quick presets.",
-    },
-    {
-      icon: Zap,
-      title: "Quick Add Everywhere",
-      description: "Global hotkey on desktop, home-screen widget on Android. Capture ideas without breaking flow.",
-    },
-    {
-      icon: Shield,
-      title: "Privacy First",
-      description: "Local-first storage. Your data lives on your device and syncs through your own Supabase project.",
     },
     {
       icon: Layers,
@@ -352,7 +392,7 @@ export function App() {
             style={{ animationDelay: "0ms", animationFillMode: "both" }}
           >
             <ClarityMark className="size-4 rounded-sm" />
-            Open source · Cross-platform · Local-first
+            Open source · Cross-platform · Local‑first
           </div>
 
           {/* headline */}
@@ -374,10 +414,10 @@ export function App() {
           </p>
 
           {/* device-aware download buttons */}
-          <PlatformDownloadRow platform={platform} />
+          <PlatformDownloadRow platform={platform} urls={urls} onBrew={() => setBrewOpen(true)} />
 
           <div
-            className="flex justify-center animate-fade-up"
+            className="flex justify-center mt-6 animate-fade-up"
             style={{ animationDelay: "400ms", animationFillMode: "both" }}
           >
             <Button size="lg" variant="outline" className="gap-2 text-base px-8" asChild>
@@ -386,7 +426,7 @@ export function App() {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <Code2 className="size-5" /> View Source
+                <FaIcon icon={faGithub} className="size-5" /> View Source
               </a>
             </Button>
           </div>
@@ -396,25 +436,19 @@ export function App() {
             className="flex flex-wrap justify-center gap-2 mt-8 animate-fade-up"
             style={{ animationDelay: "440ms", animationFillMode: "both" }}
           >
-            {["macOS", "Windows", "Android", "iOS", "Linux"].map((p) => (
+            {["macOS", "Windows", "Android", "Linux"].map((p) => (
               <Badge key={p} variant="secondary" className="text-xs px-3 py-1">
                 {p}
               </Badge>
             ))}
           </div>
 
-          <div
-            className="mx-auto mt-6 flex max-w-xl items-center gap-3 rounded-2xl border border-primary/25 bg-card/80 px-4 py-3 text-left shadow-sm backdrop-blur-sm animate-fade-up"
+          <p
+            className="mt-6 text-sm text-muted-foreground animate-fade-up"
             style={{ animationDelay: "480ms", animationFillMode: "both" }}
           >
-            <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
-              <BellRing className="size-5" />
-            </div>
-            <p className="text-sm leading-relaxed text-muted-foreground">
-              <span className="font-semibold text-foreground">Connect Gmail once.</span>{" "}
-              Your tasks sync across every platform, with notifications arriving on all your devices at the same time.
-            </p>
-          </div>
+            Syncs Everywhere
+          </p>
         </div>
 
         {/* app screenshots */}
@@ -445,7 +479,7 @@ export function App() {
               <span className="text-primary">nothing you don't</span>
             </h2>
             <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-              Clarity is built around focus. Connect Gmail once, then keep tasks and reminders aligned across every device without the clutter.
+              Clarity is built around focus. Your tasks and reminders stay aligned across every device without the clutter.
             </p>
           </Reveal>
 
@@ -456,6 +490,17 @@ export function App() {
               </Reveal>
             ))}
           </div>
+
+          {/* ── natural-language typewriter demo ─────────────────────────── */}
+          <Reveal delay={100} className="mx-auto mt-12 max-w-2xl text-center">
+            <h3 className="text-2xl sm:text-3xl font-bold tracking-tight mb-3">
+              Just type it.
+            </h3>
+            <p className="text-muted-foreground mb-6">
+              Everyday words become scheduled tasks — here is what you can add.
+            </p>
+            <TypeDemo />
+          </Reveal>
         </div>
       </section>
 
@@ -468,7 +513,7 @@ export function App() {
               One app, every device
             </h2>
             <p className="text-muted-foreground text-lg max-w-xl mx-auto">
-              Connect Gmail once and your tasks, reminders, and updates stay in sync across every platform you use.
+              One app on every device — tasks, reminders, and updates stay in sync wherever you use Clarity.
             </p>
           </Reveal>
 
@@ -477,7 +522,7 @@ export function App() {
               {
                 icon: faApple,
                 name: "macOS",
-                desc: "Native menu bar integration, global Quick Add hotkey, tray presence, and launch-at-login.",
+                desc: "Native menu bar integration, global hotkey, tray presence, and launch-at-login.",
                 badge: "macOS 12+",
               },
               {
@@ -527,24 +572,18 @@ export function App() {
 
           <Reveal delay={100}>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
-              <PlatformButton
-                icon={faApple}
-                sub="Download for"
-                label="macOS (.dmg)"
-                href="https://github.com/hariprasad2512/clarity_flutter/releases/latest"
-                highlight
-              />
+              <MacDownloadMenu macosUrl={urls.macos} onBrew={() => setBrewOpen(true)} />
               <PlatformButton
                 icon={faWindows}
                 sub="Download for"
                 label="Windows (.exe)"
-                href="https://github.com/hariprasad2512/clarity_flutter/releases/latest"
+                href={urls.windows}
               />
               <PlatformButton
                 icon={faAndroid}
                 sub="Download for"
                 label="Android (.apk)"
-                href="https://github.com/hariprasad2512/clarity_flutter/releases/latest"
+                href={urls.android}
               />
               <PlatformButton
                 icon={faAndroid}
@@ -588,7 +627,7 @@ export function App() {
               target="_blank"
               rel="noopener noreferrer"
             >
-              <Code2 className="size-5" /> Star on GitHub
+              <FaIcon icon={faGithub} className="size-5" /> Star on GitHub
             </a>
           </Button>
         </Reveal>
@@ -609,7 +648,7 @@ export function App() {
               rel="noopener noreferrer"
               className="hover:text-foreground transition-colors flex items-center gap-1.5"
             >
-              <Code2 className="size-4" /> GitHub
+              <FaIcon icon={faGithub} className="size-4" /> GitHub
             </a>
             <a
               href="https://play.google.com/store/apps/details?id=com.harry.Clarity"
@@ -623,6 +662,8 @@ export function App() {
           </div>
         </div>
       </footer>
+
+      <BrewModal open={brewOpen} onOpenChange={setBrewOpen} />
     </div>
   )
 }

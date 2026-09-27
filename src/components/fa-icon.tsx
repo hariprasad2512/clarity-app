@@ -3,6 +3,7 @@ import {
   faApple,
   faWindows,
   faAndroid,
+  faGithub,
   faLinux,
   type IconDefinition,
 } from "@fortawesome/free-brands-svg-icons"
@@ -12,6 +13,7 @@ export {
   faApple,
   faWindows,
   faAndroid,
+  faGithub,
   faLinux,
   faTerminal,
 }
