@@ -392,7 +392,7 @@ export function App() {
             style={{ animationDelay: "0ms", animationFillMode: "both" }}
           >
             <ClarityMark className="size-4 rounded-sm" />
-            Open source · Cross-platform · Local‑first
+            100% Open Source
           </div>
 
           {/* headline */}
@@ -462,11 +462,6 @@ export function App() {
           </div>
         </div>
 
-        {/* scroll indicator */}
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 animate-bounce opacity-50">
-          <div className="w-px h-8 bg-foreground/30" />
-          <span className="text-xs text-muted-foreground">scroll</span>
-        </div>
       </section>
 
       {/* ── FEATURES ─────────────────────────────────────────────────────── */}
@@ -641,7 +636,7 @@ export function App() {
             <span className="font-medium text-foreground">Clarity</span>
             <span>— Capture fast, track simply, sync everywhere.</span>
           </div>
-          <div className="flex items-center gap-4">
+          <div className="flex flex-wrap items-center justify-center gap-4">
             <a
               href="https://github.com/hariprasad2512/clarity_flutter"
               target="_blank"
@@ -657,6 +652,18 @@ export function App() {
               className="hover:text-foreground transition-colors"
             >
               Play Store
+            </a>
+            <a
+              href={`${import.meta.env.BASE_URL}privacy.html`}
+              className="hover:text-foreground transition-colors"
+            >
+              Privacy
+            </a>
+            <a
+              href={`${import.meta.env.BASE_URL}terms.html`}
+              className="hover:text-foreground transition-colors"
+            >
+              Terms
             </a>
             <span>MIT License</span>
           </div>
